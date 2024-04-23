@@ -7,7 +7,6 @@ Integrantes:
 
 Braiam Santos de Jesus - https://github.com/BraiamJesus  
 Davi dos Santos Silva - https://github.com/DAVISILVA12345   
-Diogo de Jesus Menezes Silva - https://github.com/DMenezesJS   
 Milena O. de A. R. Corrêa - https://github.com/milenaofarril   
 Paulo Henrique Bitencourth Sousa - https://github.com/Paulobittencourts  
 Talita Rienzi Prado Jarnicki - https://github.com/TalitaRienzi
