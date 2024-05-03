@@ -13,10 +13,7 @@ public class Clientes {
     }
 
     public boolean chegouCliente(){
-
-        int pessoas = aleatorio.nextInt(30);
-        return pessoas == 0;
-
+        return aleatorio.nextInt(100) < 10;
     }
 }
 
