@@ -2,12 +2,12 @@ import java.util.List;
 
 public class Transacao {
 
-    private int codigo;
 
     private static int ATENDIMENTO = 21600;
     private int tempoTransacao;
-    private int saques, deposito, pagamentos, tempo, tempoExtra;
+    private int saques, deposito, pagamentos, tempo, tempoExtra,totalCliente;
     private Guiche guiche = new Guiche();
+    private  Clientes clientes = new Clientes();
 
 
     public Transacao() {
@@ -17,18 +17,24 @@ public class Transacao {
         this.saques = 0;
         this.tempo = 0;
         this.tempoExtra = 0;
+        this.totalCliente = 0;
     }
 
-    public int trasacaoRealizada(int codigo){
+    public int transacaoRealizada(int codigo){
         List<Guiche> guicheLista = guiche.listaGuiche();
         while (tempo <= ATENDIMENTO){
 
             if (tempo >= ATENDIMENTO){
                 tempoExtra++;
             }
+            if (tempo <= ATENDIMENTO) {
+                if (clientes.chegouCliente())
+                    totalCliente++;
+            }
             if(guiche.validaGuiche(guicheLista)){
-                for(int i = 0; i <= 2; i++){
-                    if(guicheLista.get(i).isGuicheLivre()){
+                for(Guiche value:guicheLista){
+                    if(value.isGuicheLivre()){
+                        value.setGuicheLivre(false);
                         switch (codigo){
                             case 0:
                                 tempoTransacao = tempo + 60;
@@ -43,9 +49,11 @@ public class Transacao {
                                 pagamentos++;
                                 break;
                         }
+                   value.setTempoOcupado(tempoTransacao);
                     }
                 }
             }
+            guiche.guicheDisponivel(guicheLista,tempo);
             tempo++;
         }
         return tempoTransacao;
