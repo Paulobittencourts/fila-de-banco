@@ -26,7 +26,6 @@ public class Guiche {
         ArrayList<Guiche> listaGuiche = new ArrayList<>(3);
         for(int i = 0; i <=2; i++){
             listaGuiche.add(new Guiche());
-            listaGuiche.get(i);
         }
         return listaGuiche;
     }
@@ -34,7 +33,7 @@ public class Guiche {
     public boolean validaGuiche(List<Guiche> guiches){
         for(int i = 0; i < guiches.size();i++){
             if(!guiches.get(i).isGuicheLivre()){
-               setGuicheLivre(false);
+               guiches.get(i).setGuicheLivre(false);
             }
         }
         return isGuicheLivre();
@@ -42,7 +41,7 @@ public class Guiche {
     public void guicheDisponivel(List<Guiche> guiches, int tempo ){
         for(int i = 0; i < guiches.size();i++) {
             if (!guiches.get(i).isGuicheLivre() && guiches.get(i).getTempoOcupado() == tempo) {
-                setGuicheLivre(true);
+                 guiches.get(i).setGuicheLivre(true);
             }
         }
     }
