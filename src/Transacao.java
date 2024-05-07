@@ -3,11 +3,11 @@ import java.util.List;
 public class Transacao {
 
 
-    private static int ATENDIMENTO = 21600;
+    private static final int ATENDIMENTO = 21600;
     private int tempoTransacao;
-    private int saques, deposito, pagamentos, tempo, tempoExtra,totalCliente;
+    private int saques, deposito, pagamentos, tempo, tempoExtra;
     private Guiche guiche = new Guiche();
-    private  Clientes clientes = new Clientes();
+    private Clientes clientes = new Clientes();
 
 
     public Transacao() {
@@ -17,25 +17,20 @@ public class Transacao {
         this.saques = 0;
         this.tempo = 0;
         this.tempoExtra = 0;
-        this.totalCliente = 0;
     }
 
-    public int transacaoRealizada(int codigo){
+    public int transacaoRealizada(int codigo) {
         List<Guiche> guicheLista = guiche.listaGuiche();
-        while (tempo <= ATENDIMENTO){
+        while (tempo <= ATENDIMENTO) {
 
-            if (tempo >= ATENDIMENTO){
-                tempoExtra++;
+            if (clientes.chegouCliente()){
+
             }
-            if (tempo <= ATENDIMENTO) {
-                if (clientes.chegouCliente())
-                    totalCliente++;
-            }
-            if(guiche.validaGuiche(guicheLista)){
-                for(Guiche value:guicheLista){
-                    if(value.isGuicheLivre()){
+            if (guiche.validaGuiche(guicheLista)) {
+                for (Guiche value : guicheLista) {
+                    if (value.isGuicheLivre()) {
                         value.setGuicheLivre(false);
-                        switch (codigo){
+                        switch (codigo) {
                             case 0:
                                 tempoTransacao = tempo + 60;
                                 saques++;
@@ -48,13 +43,20 @@ public class Transacao {
                                 tempoTransacao = tempo + 120;
                                 pagamentos++;
                                 break;
+                            default:
+                                System.out.println("Codigo Invalido");
                         }
-                   value.setTempoOcupado(tempoTransacao);
+                        value.setTempoOcupado(tempoTransacao);
+                        break;
                     }
                 }
             }
-            guiche.guicheDisponivel(guicheLista,tempo);
+            guiche.guicheDisponivel(guicheLista, tempo);
             tempo++;
+
+            if (tempo >= ATENDIMENTO) {
+                tempoExtra++;
+            }
         }
         return tempoTransacao;
     }
