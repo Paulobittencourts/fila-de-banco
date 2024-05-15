@@ -14,18 +14,9 @@ public class Guiche {
         return listaGuiche;
     }
 
-    public boolean validaGuiche(List<Guiche> guiches) {
-        for (int i = 0; i < guiches.size(); i++) {
-            if (!guiches.get(i).isGuicheLivre()) {
-                guiches.get(i).setGuicheLivre(false);
-            }
-        }
-        return isGuicheLivre();
-    }
-
     public void guicheDisponivel(List<Guiche> guiches, int tempo) {
         for (int i = 0; i < guiches.size(); i++) {
-            if (!guiches.get(i).isGuicheLivre() && guiches.get(i).getTempoOcupado() == tempo) {
+            if (!guiches.get(i).isGuicheLivre() && tempo == guiches.get(i).getTempoOcupado()) {
                 guiches.get(i).setGuicheLivre(true);
             }
         }

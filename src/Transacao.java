@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Random;
 
 public class Transacao {
 
@@ -8,6 +9,7 @@ public class Transacao {
     private int saques, deposito, pagamentos, tempo, tempoExtra;
     private Guiche guiche = new Guiche();
     private Clientes clientes = new Clientes();
+    private Random random = new Random();
 
 
     public Transacao() {
@@ -19,45 +21,61 @@ public class Transacao {
         this.tempoExtra = 0;
     }
 
-    public int transacaoRealizada(int codigo) {
+    public String transacaoRealizada() {
         List<Guiche> guicheLista = guiche.listaGuiche();
         while (tempo <= ATENDIMENTO) {
 
             if (clientes.chegouCliente()){
-
-            }
-            if (guiche.validaGuiche(guicheLista)) {
-                for (Guiche value : guicheLista) {
-                    if (value.isGuicheLivre()) {
-                        value.setGuicheLivre(false);
-                        switch (codigo) {
-                            case 0:
-                                tempoTransacao = tempo + 60;
-                                saques++;
-                                break;
-                            case 1:
-                                tempoTransacao = tempo + 90;
-                                deposito++;
-                                break;
-                            case 2:
-                                tempoTransacao = tempo + 120;
-                                pagamentos++;
-                                break;
-                            default:
-                                System.out.println("Codigo Invalido");
+                    for (Guiche value : guicheLista) {
+                        if (value.isGuicheLivre()) {
+                            value.setGuicheLivre(false);
+                            tipoTransacao();
+                            value.setTempoOcupado(tempoTransacao);
+                            break;
                         }
-                        value.setTempoOcupado(tempoTransacao);
-                        break;
-                    }
                 }
             }
-            guiche.guicheDisponivel(guicheLista, tempo);
             tempo++;
+            guiche.guicheDisponivel(guicheLista, tempo);
+
 
             if (tempo >= ATENDIMENTO) {
                 tempoExtra++;
             }
         }
-        return tempoTransacao;
+        return resultado();
+    }
+
+    public void tipoTransacao(){
+        switch (random.nextInt(3)) {
+            case 0:
+                tempoTransacao = tempo + 60;
+                saques++;
+                break;
+            case 1:
+                tempoTransacao = tempo + 90;
+                deposito++;
+                break;
+            case 2:
+                tempoTransacao = tempo + 120;
+                pagamentos++;
+                break;
+            default:
+                System.out.println("Código Inválido");
+        }
+    }
+    public String resultado(){
+        return "Total de clientes atendidos: " + clientes.getTotalClientes() + "\n" +
+        "Número de clientes que realizaram saque: " + saques + "\n" +
+        "Número de clientes que realizaram depósito: " + deposito + "\n" +
+        "Número de clientes que realizaram pagamento: " + pagamentos + "\n" +
+        "Tempo médio de espera na fila: " + "\n" +
+        "Tempo extra de expediente: " + tempoExtra;
+
+
+
+
+
+
     }
 }
