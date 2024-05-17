@@ -22,6 +22,15 @@ public class Guiche {
         }
     }
 
+    public boolean todosGuichesLivres(List<Guiche> guiches) {
+        for (Guiche guiche : guiches) {
+            if (!guiche.isGuicheLivre()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public boolean isGuicheLivre() {
         return guicheLivre;

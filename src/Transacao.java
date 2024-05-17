@@ -24,41 +24,44 @@ public class Transacao {
 
     public String transacaoRealizada() {
         List<Guiche> guicheLista = guiche.listaGuiche();
-        while (tempo <= ATENDIMENTO || !fila.isEmpty()) {
-            if (clientes.chegouCliente(tempo)){
-                    for (Guiche value : guicheLista) {
-                        if (value.isGuicheLivre()) {
-                            value.setGuicheLivre(false);
-                            tipoTransacao();
-                            value.setTempoOcupado(tempoTransacao);
-                            tempoEspera += tempo - fila.dequeue();
-                            break;
-                        }
+        while (tempo < ATENDIMENTO || !fila.isEmpty() && !guiche.todosGuichesLivres(guicheLista)) {
+
+            if (tempo < ATENDIMENTO && clientes.chegouCliente()) {
+                fila.enqueue(tempo);
+            }
+
+            for (Guiche value : guicheLista) {
+                if (value.isGuicheLivre() && !fila.isEmpty()) {
+                    value.setGuicheLivre(false);
+                    tipoTransacao();
+                    value.setTempoOcupado(tempo + tempoTransacao);
+                    tempoEspera += tempo - fila.dequeue();
+                    break;
                 }
             }
+
             tempo++;
             guiche.guicheDisponivel(guicheLista, tempo);
 
-
-            if (tempo >= ATENDIMENTO) {
+            if (tempo > ATENDIMENTO && !fila.isEmpty()) {
                 tempoExtra++;
             }
         }
         return resultado();
     }
 
-    private void tipoTransacao(){
+    private void tipoTransacao() {
         switch (random.nextInt(3)) {
             case 0:
-                tempoTransacao = tempo + 60;
+                tempoTransacao = 60;
                 saques++;
                 break;
             case 1:
-                tempoTransacao = tempo + 90;
+                tempoTransacao = 90;
                 deposito++;
                 break;
             case 2:
-                tempoTransacao = tempo + 120;
+                tempoTransacao = 120;
                 pagamentos++;
                 break;
             default:
@@ -66,10 +69,11 @@ public class Transacao {
         }
     }
 
-    private String calcularMedia (){
-        int mediaEspera = tempoEspera / clientes.getTotalClientes();
+    private String calcularMedia() {
+        int mediaEspera;
+        if (clientes.getTotalClientes() > 0) mediaEspera = tempoEspera / clientes.getTotalClientes();
+        else mediaEspera = 0;
         return calcularHorario(mediaEspera);
-
     }
 
     private String calcularHorario(int mediaEspera){
@@ -81,18 +85,13 @@ public class Transacao {
         int segundos = mediaEspera;
         return  hora + "Hs " + minutos + "m " + segundos + "s";
     }
+
     private String resultado(){
         return "Total de clientes atendidos: " + clientes.getTotalClientes() + "\n" +
         "Número de clientes que realizaram saque: " + saques + "\n" +
         "Número de clientes que realizaram depósito: " + deposito + "\n" +
         "Número de clientes que realizaram pagamento: " + pagamentos + "\n" +
         "Tempo médio de espera na fila: " + calcularMedia() + "\n" +
-        "Tempo extra de expediente: " + tempoExtra;
-
-
-
-
-
-
+        "Tempo extra de expediente: " + calcularHorario(tempoExtra);
     }
 }

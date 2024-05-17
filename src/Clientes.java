@@ -5,7 +5,6 @@ public class Clientes {
     private int horaDeEntrada;
     private final Random aleatorio = new Random();
     private int totalClientes = 0;
-    private FilaCliente clienteFila = new FilaCliente();
 
     public Clientes() {
     }
@@ -14,9 +13,8 @@ public class Clientes {
         this.horaDeEntrada = horaDeEntrada;
     }
 
-    public boolean chegouCliente(int tempo) {
+    public boolean chegouCliente() {
         if (aleatorio.nextInt(30) == 0) {
-            clienteFila.enqueue(tempo);
             totalClientes++;
             return true;
         }
