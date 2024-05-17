@@ -6,10 +6,11 @@ public class Transacao {
 
     private static final int ATENDIMENTO = 21600;
     private int tempoTransacao;
-    private int saques, deposito, pagamentos, tempo, tempoExtra;
+    private int saques, deposito, pagamentos, tempo, tempoExtra, tempoEspera;
     private Guiche guiche = new Guiche();
     private Clientes clientes = new Clientes();
     private Random random = new Random();
+    private FilaCliente fila = new FilaCliente();
 
 
     public Transacao() {
@@ -23,14 +24,14 @@ public class Transacao {
 
     public String transacaoRealizada() {
         List<Guiche> guicheLista = guiche.listaGuiche();
-        while (tempo <= ATENDIMENTO) {
-
-            if (clientes.chegouCliente()){
+        while (tempo <= ATENDIMENTO || !fila.isEmpty()) {
+            if (clientes.chegouCliente(tempo)){
                     for (Guiche value : guicheLista) {
                         if (value.isGuicheLivre()) {
                             value.setGuicheLivre(false);
                             tipoTransacao();
                             value.setTempoOcupado(tempoTransacao);
+                            tempoEspera += tempo - fila.dequeue();
                             break;
                         }
                 }
@@ -46,7 +47,7 @@ public class Transacao {
         return resultado();
     }
 
-    public void tipoTransacao(){
+    private void tipoTransacao(){
         switch (random.nextInt(3)) {
             case 0:
                 tempoTransacao = tempo + 60;
@@ -64,12 +65,28 @@ public class Transacao {
                 System.out.println("Código Inválido");
         }
     }
-    public String resultado(){
+
+    private String calcularMedia (){
+        int mediaEspera = tempoEspera / clientes.getTotalClientes();
+        return calcularHorario(mediaEspera);
+
+    }
+
+    private String calcularHorario(int mediaEspera){
+        mediaEspera = mediaEspera % 86400;
+        int hora = mediaEspera / 3600;
+        mediaEspera = mediaEspera % 3600;
+        int minutos = mediaEspera / 60;
+        mediaEspera = mediaEspera % 60;
+        int segundos = mediaEspera;
+        return  hora + "Hs " + minutos + "m " + segundos + "s";
+    }
+    private String resultado(){
         return "Total de clientes atendidos: " + clientes.getTotalClientes() + "\n" +
         "Número de clientes que realizaram saque: " + saques + "\n" +
         "Número de clientes que realizaram depósito: " + deposito + "\n" +
         "Número de clientes que realizaram pagamento: " + pagamentos + "\n" +
-        "Tempo médio de espera na fila: " + "\n" +
+        "Tempo médio de espera na fila: " + calcularMedia() + "\n" +
         "Tempo extra de expediente: " + tempoExtra;
 
 

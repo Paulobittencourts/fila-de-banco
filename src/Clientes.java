@@ -5,12 +5,18 @@ public class Clientes {
     private int horaDeEntrada;
     private final Random aleatorio = new Random();
     private int totalClientes = 0;
+    private FilaCliente clienteFila = new FilaCliente();
 
     public Clientes() {
     }
 
-    public boolean chegouCliente() {
+    public Clientes(int horaDeEntrada) {
+        this.horaDeEntrada = horaDeEntrada;
+    }
+
+    public boolean chegouCliente(int tempo) {
         if (aleatorio.nextInt(30) == 0) {
+            clienteFila.enqueue(tempo);
             totalClientes++;
             return true;
         }
@@ -20,5 +26,10 @@ public class Clientes {
     public int getTotalClientes() {
         return totalClientes;
     }
+
+    public int getHoraDeEntrada() {
+        return horaDeEntrada;
+    }
 }
+
 
